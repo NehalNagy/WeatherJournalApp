@@ -26,7 +26,7 @@ function perfomAction() {
             postWeatherData('/addData', { temperature: data.main.temp, currentDate: newDate, userResponse: userFeeling });
         })
         .then(function () {//update the UI dynamically
-
+            updateUI();
         });
 }
 
@@ -67,3 +67,26 @@ const postWeatherData = async (url = '', data = {}) => {
         console.log("error", error);
     }
 };
+
+const updateUI = async () => {
+    /**
+     *  The steps to updating the UI of an app dynamically...
+    1. Create a selector
+    2. Capture the data you want to update the element with
+    3. Set updated property for element.    
+     */
+    const request = await fetch('/weather');
+    try {
+        const allWeatherData = await request.json();
+        console.log(allWeatherData);
+        document.getElementById('temp').innerHTML = allWeatherData.temperature;
+        document.getElementById('date').innerHTML = allWeatherData.clientDate;
+        document.getElementById('content').innerHTML = allWeatherData.userFeeling;
+    }
+    catch (error) {
+        console.log(error);
+    }
+
+
+
+}
