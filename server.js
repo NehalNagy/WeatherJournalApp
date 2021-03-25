@@ -30,3 +30,22 @@ const server = app.listen(port, listening);
 function listening() {
     console.log('server running');
 }
+
+//GET Route:
+app.get('/weather', sendWeatherData);
+function sendWeatherData(req, res) {
+    res.send(projectData);
+}
+
+//POST Route:
+app.post('/addData', addWeatherData);
+function addWeatherData(req, res) {
+    console.log(req);
+    projectData = {
+        temperature: req.body.temperature,
+        clientDate: req.body.currentDate,
+        userFeeling: req.body.userResponse
+    }
+    console.log('project data : ');
+    console.log(projectData);
+}
