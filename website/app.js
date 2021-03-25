@@ -9,7 +9,7 @@ const apikey = '&appid=6a50dde02db3c5ae2fc05a22e77ffc2d';
  */
 // Create a new date instance dynamically with JS
 let d = new Date();
-let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
+let newDate = (d.getMonth() + 1) + '.' + d.getDate() + '.' + d.getFullYear();
 
 //add click listner to the generate button
 document.getElementById('generate').addEventListener('click', perfomAction);
