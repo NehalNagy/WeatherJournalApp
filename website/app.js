@@ -20,13 +20,20 @@ function perfomAction() {
     //get the user feeling
     const userFeeling = document.getElementById('feelings').value;
 
+    let tempData = null;
     getWeatherData(baseURL, apikey, zipCode)
         .then(function (data) {
             clearUI();//in case of typing invalid zip and there is already data displayed in the UI, we have to clear previuos data displayed.
-            postWeatherData('/addData', { temperature: data.main.temp, currentDate: newDate, userResponse: userFeeling });
+            tempData = data;
+            if (data.cod == '404' || data.cod == '400') {
+                alert(data.message);
+            }
+            else
+                postWeatherData('/addData', { temperature: data.main.temp, currentDate: newDate, userResponse: userFeeling });
         })
-        .then(function () {//update the UI dynamically
-            updateUI();
+        .then(function () {//update the UI dynamically            
+            if (tempData.cod != '404' && tempData.cod != '400')
+                updateUI();
         });
 }
 
@@ -35,13 +42,13 @@ const getWeatherData = async (baseUrl, apikey, zipCode) => {
     const res = await fetch(baseUrl + zipCode + apikey);
     try {
         const data = await res.json();
-        if (data.cod == '404' || data.cod == '400') {
-            alert(data.message);
-            throw new Error(data.message);
-            // return null;
-        }
-        else
-            return data;
+        // if (data.cod == '404' || data.cod == '400') {
+        //     alert(data.message);
+        //     throw new Error(data.message);
+        //     // return null;
+        // }
+        // else
+        return data;
     }
     catch (error) {
         console.log(error);
