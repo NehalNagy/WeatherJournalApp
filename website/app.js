@@ -1,6 +1,6 @@
 /* Global Variables */
 const baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip=';
-const apikey = '&appid=6a50dde02db3c5ae2fc05a22e77ffc2d';
+const apikey = '&appid=6a50dde02db3c5ae2fc05a22e77ffc2d&units=metric';
 
 /**
  * API call example
@@ -19,10 +19,10 @@ function perfomAction() {
     const zipCode = document.getElementById('zip').value;
     //get the user feeling
     const userFeeling = document.getElementById('feelings').value;
-    console.log(zipCode);
+
     getWeatherData(baseURL, apikey, zipCode)
         .then(function (data) {
-            console.log("temp = " + data.main.temp);
+            clearUI();//in case of typing invalid zip and there is already data displayed in the UI, we have to clear previuos data displayed.
             postWeatherData('/addData', { temperature: data.main.temp, currentDate: newDate, userResponse: userFeeling });
         })
         .then(function () {//update the UI dynamically
@@ -35,8 +35,13 @@ const getWeatherData = async (baseUrl, apikey, zipCode) => {
     const res = await fetch(baseUrl + zipCode + apikey);
     try {
         const data = await res.json();
-        console.log(data);
-        return data;
+        if (data.cod == '404' || data.cod == '400') {
+            alert(data.message);
+            throw new Error(data.message);
+            // return null;
+        }
+        else
+            return data;
     }
     catch (error) {
         console.log(error);
@@ -67,7 +72,11 @@ const postWeatherData = async (url = '', data = {}) => {
         console.log("error", error);
     }
 };
-
+function clearUI() {
+    document.getElementById('temp').innerHTML = '';
+    document.getElementById('date').innerHTML = '';
+    document.getElementById('content').innerHTML = '';
+}
 const updateUI = async () => {
     /**
      *  The steps to updating the UI of an app dynamically...
@@ -75,11 +84,13 @@ const updateUI = async () => {
     2. Capture the data you want to update the element with
     3. Set updated property for element.    
      */
+
+
     const request = await fetch('/weather');
     try {
         const allWeatherData = await request.json();
         console.log(allWeatherData);
-        document.getElementById('temp').innerHTML = allWeatherData.temperature;
+        document.getElementById('temp').innerHTML = allWeatherData.temperature + ' &#8451;';
         document.getElementById('date').innerHTML = allWeatherData.clientDate;
         document.getElementById('content').innerHTML = allWeatherData.userFeeling;
     }
