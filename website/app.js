@@ -42,12 +42,6 @@ const getWeatherData = async (baseUrl, apikey, zipCode) => {
     const res = await fetch(baseUrl + zipCode + apikey);
     try {
         const data = await res.json();
-        // if (data.cod == '404' || data.cod == '400') {
-        //     alert(data.message);
-        //     throw new Error(data.message);
-        //     // return null;
-        // }
-        // else
         return data;
     }
     catch (error) {
